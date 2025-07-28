@@ -1,0 +1,571 @@
+<div class="tx-issue-tooltip-loading" style="display: none; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 12px; width: 500px; z-index: 39; font-size: 12px;">
+  <div class="issue-loading" style="font-weight: bold; color: #333; margin-bottom: 4px;">
+    <span class="issue-loading-text" style="color: #666; font-size: 11px;">이슈 정보를 불러오는 중입니다...</span>
+  </div>
+</div>
+
+<div class="tx-issue-tooltip" style="display: none; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 12px; width: 500px; z-index: 39; font-size: 12px;">
+  <!-- 이슈 헤더 -->
+  <div class="issue-header" style="border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 4px;">
+    <div class="issue-title" style="font-weight: bold; color: #333; margin-bottom: 4px;">
+      <span class="issue-tracker tracker" style="color: #666; font-size: 11px;"></span>
+      <span class="issue-id id" style="color: #169; font-weight: bold;"></span>:
+      <span class="issue-subject subject" style="color: #333;"></span>
+    </div>
+  </div>
+
+  <!-- 상태 및 우선순위 -->
+  <div class="issue-status-section" style="margin-bottom: 4px;">
+    <table style="width: 100%; font-size: 11px;">
+      <tr>
+        <td><span style="color: #666; padding: 2px 4px;">상태:</span>
+        <span class="issue-status status" style="font-weight: bold;"></span></td>
+        <td><span style="color: #666; padding: 2px 4px;">우선순위:</span>
+        <span class="issue-priority priority"></span></td>
+        <td><span style="color: #666; padding: 2px 4px;">범주:</span>
+        <span class="issue-category category"></span></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 담당자 및 카테고리 -->
+  <div class="issue-assignment-section" style="margin-bottom: 4px;">
+    <table style="width: 100%; font-size: 11px;">
+      <tr>
+        <td><span style="color: #666; padding: 2px 4px;">생성자:</span>
+        <span class="issue-author author"></span></td>
+        <td><span style="color: #666; padding: 2px 4px;">담당자:</span>
+        <span class="issue-assigned-to assigned_to"></span></td>
+      </tr>
+      <tr>
+        <td><span style="color: #666; padding: 2px 4px;">버전:</span>
+        <span class="issue-fixed-version fixed_version"></span></td>
+        <td><span style="color: #666; padding: 2px 4px;">진행률:</span>
+        <div class="progress-bar" style="width: 60px; height: 14px; background: #f0f0f0; border: 1px solid #ddd; display: inline-block; margin-left: 8px; position: relative;vertical-align: middle;">
+          <div class="progress-fill" style="height: 100%; background: #759fcf; width: 0%;"></div>
+          <span class="issue-done-ratio done_ratio" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 11px; font-weight: bold; color: #000;">0%</span>
+        </div>
+        </td>
+      </tr>
+      <tr>
+        <td><span style="color: #666; padding: 2px 4px;">시작일:</span>
+        <span class="issue-start-date start_date">-</span></td>
+        <td><span style="color: #666; padding: 2px 4px;">마감일:</span>
+        <span class="issue-due-date due_date">-</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 일정 및 진행률 -->
+  <!-- 작업 시간 -->
+  <div class="issue-work-time-section" style="margin-bottom: 4px; font-size: 11px;">
+    <table style="width: 100%;">
+      <tr>
+        <td colspan="2"><span style="color: #666; padding: 2px 4px;">추정시간:</span>
+        <span class="issue-estimated-hours estimated_hours">없음</span></td>
+      </tr>
+      <tr>
+        <td><span style="color: #666; padding: 2px 4px;">작업자:</span>
+        <span class="issue-worker worker"></span></td>
+        <td><span style="color: #666; padding: 2px 4px;">작업시간:</span>
+        <span class="issue-work-period work_period">-</span></td>
+      </tr>
+    </table>
+  </div>
+  
+  <!-- 설명 -->
+  <div class="issue-description-section" style="margin-bottom: 4px; font-size: 11px; border-top: 1px solid #eee;">
+    <table style="width: 100%;">
+      <tr>
+        <td colspan="2"><span style="color: #666; padding: 2px 4px;">설명:</span>
+        <span class="issue-description description"></span></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 첨부 파일들 -->
+  <div class="issue-attachments-section" style="border-top: 1px solid #eee; padding-top: 4px;">
+    <div class="attachments-header" style="font-weight: bold; color: #666; margin-bottom: 4px; font-size: 11px;">
+      첨부 파일들 (<span class="attachments-count">0</span>)
+    </div>
+    <div class="issue-attachments attachments">
+      <!-- 첨부 파일들이 JavaScript로 동적으로 추가됩니다 -->
+    </div>
+  </div>
+
+  <!-- 하위 이슈들 -->
+  <div class="issue-children-section" style="border-top: 1px solid #eee; padding-top: 4px;">
+    <div class="children-header" style="font-weight: bold; color: #666; margin-bottom: 4px; font-size: 11px;">
+      하위 이슈들 (<span class="children-count">0</span>)
+    </div>
+    <div class="issue-childrens childrens" style="max-height: 120px; overflow-y: auto;">
+      <!-- 하위 이슈들이 JavaScript로 동적으로 추가됩니다 -->
+    </div>
+  </div>
+
+  <!-- 날짜 정보 -->
+  <div class="issue-dates-section" style="margin-bottom: 2px; font-size: 10px; color: #999; border-top: 1px solid #eee; padding-top: 2px;">
+    <table style="width: 100%; cell-padding: 0px; cell-spacing: 0px;">
+      <tr>
+        <td align="left"><span style="color: #666; padding: 0px 0px;">생성일:</span>
+        <span class="issue-created-on created_on"></span></td>
+        <td align="right"><span style="color: #666; padding: 0px 0px;">수정일:</span>
+        <span class="issue-updated-on updated_on"></span></td>
+      </tr>
+    </table>
+  </div>
+
+</div>
+
+<!-- 하위 이슈 템플릿 (JavaScript에서 복제하여 사용) -->
+<template id="child-issue-template">
+  <div class="child-issue" style="border-left: 3px solid #ddd; padding: 4px 6px; margin: 2px 0; background: #f9f9f9; font-size: 10px;">
+    <div class="child-header" style="margin-bottom: 2px;">
+      <span class="child-id" style="color: #169; font-weight: bold;"></span>:
+      <span class="child-subject" style="color: #333;"></span>
+    </div>
+    <div class="child-meta" style="color: #666;">
+      <span class="child-status" style="font-weight: bold;"></span>
+      - <span class="child-done-ratio">0%</span>
+      <div class="child-progress-bar" style="width: 40px; height: 6px; background: #f0f0f0; border: 1px solid #ddd; display: inline-block; margin-left: 4px; position: relative;">
+        <div class="child-progress-fill" style="height: 100%; background: #759fcf; width: 0%;"></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style>
+.issue-tooltip {
+  font-family: Verdana, sans-serif;
+}
+.issue-tooltip table {
+  border-collapse: collapse;
+}
+.issue-tooltip td {
+  vertical-align: top;
+}
+.progress-bar {
+  border-radius: 3px;
+}
+.progress-fill {
+  border-radius: 2px;
+}
+.child-progress-bar {
+  border-radius: 2px;
+}
+.child-progress-fill {
+  border-radius: 1px;
+}
+.issue-childrens::-webkit-scrollbar {
+  width: 6px;
+}
+.issue-childrens::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+.issue-childrens::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+.issue-childrens::-webkit-scrollbar-thumb:hover {
+  background: #bbb;
+}
+</style>
+
+
+<script>
+
+    var tooltip = $('.tx-issue-tooltip');
+    var tooltipTimer = null;
+    var hideTimer = null;
+    var cachedIssueData = {}; // 이슈 데이터 캐시  
+  
+  
+    // 마우스 호버 이벤트 핸들러
+    function showTooltip(e, issueId) {
+        // 타이머 초기화
+        clearTimeout(hideTimer);
+        clearTimeout(tooltipTimer);
+        
+        tooltipTimer = setTimeout(function() {
+
+            // 툴팁 표시
+            tooltip.css({
+                'display': 'none',
+                'left': e.pageX + 10 + 'px',
+                'top': e.pageY + 10 + 'px'
+            });
+            
+            // 캐시된 데이터가 있으면 사용
+            if (cachedIssueData[issueId]) {
+                applyIssueDataToTooltip(cachedIssueData[issueId]);
+            } else {
+                // AJAX로 이슈 디테일 요청
+                var projectIdentifier = '<%= @project ? @project.identifier : "" %>';
+                var url = '/issue_detail/' + issueId;
+                
+                $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // 캐시에 저장
+                    cachedIssueData[issueId] = data;
+                    // 툴팁에 적용
+                    applyIssueDataToTooltip(data);
+                },
+                error: function() {
+                    console.error('Failed to load issue detail for issue #' + issueId);
+                }
+                });
+            }
+            
+            // 화면 경계 체크
+            var windowWidth = $(window).width();
+            var windowHeight = $(window).height();
+            var tooltipWidth = tooltip.outerWidth();
+            var tooltipHeight = tooltip.outerHeight();
+            
+            // 오른쪽 경계 체크
+            if (e.pageX + 10 + tooltipWidth > windowWidth) {
+                tooltip.css('left', (e.pageX - tooltipWidth - 10) + 'px');
+            }
+            
+            // 하단 경계 체크
+            if (e.pageY + 10 + tooltipHeight > windowHeight + $(window).scrollTop()) {
+                tooltip.css('top', (e.pageY - tooltipHeight - 10) + 'px');
+            }
+        }, 500); // 0.5초 딜레이
+    }
+
+    // 툴팁 자체에 마우스 호버 시 닫히지 않도록
+    tooltip.on('mouseenter', function() {
+        clearTimeout(hideTimer);
+    }).on('mouseleave', function() {
+        hideTooltip();
+    });
+
+    // 날짜 포맷팅 함수
+    function formatDateTime(dateString) {
+        if (!dateString) return '-';
+        var date = new Date(dateString);
+        return date.getFullYear() + '-' + 
+            String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+            String(date.getDate()).padStart(2, '0') + ' ' +
+            String(date.getHours()).padStart(2, '0') + ':' +
+            String(date.getMinutes()).padStart(2, '0');
+    }
+    
+    function formatDate(dateString) {
+        if (!dateString) return '-';
+        var date = new Date(dateString);
+        return date.getFullYear() + '-' + 
+            String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+            String(date.getDate()).padStart(2, '0');
+    }
+
+    // 시간 차이 계산 함수
+    function calculateHoursDifference(beginTime, endTime) {
+        if (!beginTime || !endTime) return null;
+        
+        var begin = new Date(beginTime);
+        var end = new Date(endTime);
+        var diffMs = end.getTime() - begin.getTime();
+        var diffMinutes = Math.round(diffMs / (1000 * 60)); // 분 단위로 계산
+        
+        if (diffMinutes >= 1440) { // 24시간(1440분) 이상
+            // 날짜 차이 계산 (시작일부터 종료일까지 포함)
+            var beginDate = new Date(begin.getFullYear(), begin.getMonth(), begin.getDate());
+            var endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+            var diffDays = Math.round((endDate.getTime() - beginDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+            return diffDays + '일';
+        } else if (diffMinutes >= 60) { // 1시간(60분) 이상
+            var diffHours = Math.floor(diffMinutes / 60);
+            return diffHours + '시간';
+        } else { // 1시간 미만
+            return diffMinutes + '분';
+        }
+    }
+
+    // 작업 시간 포맷팅 함수
+    function formatWorkPeriod(beginTime, endTime) {
+        if (!beginTime && !endTime) return '-';
+        
+        var beginText = beginTime ? formatDate(beginTime) : '';
+        var endText = endTime ? formatDate(endTime) : '';
+        
+        if (beginTime && endTime) {
+            var hoursDiff = calculateHoursDifference(beginTime, endTime);
+            return beginText + ' ~ ' + endText + ' (' + hoursDiff + ')';
+        } else {
+            return beginText + ' ~ ' + endText;
+        }
+    }
+
+    function formatEstimatedHours(hours) {
+        if (hours === null) return '-';
+        if (hours === 0) return '즉시';
+        if (hours >= 8 ) return Math.round(hours/8.0) + '일';
+        return Math.round(hours) + '시간';
+    }
+
+    // 파일 타입에 따른 아이콘 반환 함수
+    function getFileIcon(contentType) {
+        if (!contentType) contentType = '';
+        contentType = contentType.toLowerCase();
+        
+        var iconStyle = 'margin-right: 4px; font-size: 12px;';
+        
+        if (contentType.includes('image/')) {
+            return '<span style="' + iconStyle + ' color: #4CAF50;">🖼️</span>';
+        } else if (contentType.includes('pdf')) {
+            return '<span style="' + iconStyle + ' color: #F44336;">📄</span>';
+        } else if (contentType.includes('msword') || contentType.includes('wordprocessingml')) {
+            return '<span style="' + iconStyle + ' color: #2196F3;">📝</span>';
+        } else if (contentType.includes('excel') || contentType.includes('spreadsheetml')) {
+            return '<span style="' + iconStyle + ' color: #4CAF50;">📊</span>';
+        } else if (contentType.includes('powerpoint') || contentType.includes('presentationml')) {
+            return '<span style="' + iconStyle + ' color: #FF9800;">📈</span>';
+        } else if (contentType.includes('zip') || contentType.includes('rar') || contentType.includes('tar') || contentType.includes('compressed')) {
+            return '<span style="' + iconStyle + ' color: #9C27B0;">🗜️</span>';
+        } else if (contentType.includes('video/')) {
+            return '<span style="' + iconStyle + ' color: #E91E63;">🎬</span>';
+        } else if (contentType.includes('audio/')) {
+            return '<span style="' + iconStyle + ' color: #FF5722;">🎵</span>';
+        } else if (contentType.includes('text/')) {
+            return '<span style="' + iconStyle + ' color: #607D8B;">📝</span>';
+        } else if (contentType.includes('json') || contentType.includes('xml')) {
+            return '<span style="' + iconStyle + ' color: #795548;">⚙️</span>';
+        } else {
+            return '<span style="' + iconStyle + ' color: #9E9E9E;">📎</span>';
+        }
+    }
+
+    // 이슈 데이터를 툴팁에 적용하는 함수
+    function applyIssueDataToTooltip(data) {
+        if (!data.success || !data.issue) return;
+
+        var issue = data.issue;
+        //var tooltip = $('.tx-issue-tooltip');
+
+        //tooltip_loading.css('display', 'none');
+        tooltip.css('display', 'block');
+
+        // description 처리: HTML 태그 제거 및 최대 5라인으로 제한
+        var description = issue.description || '';
+        if( description.length > 0 ) {
+          // HTML 태그 제거
+          description = description.replace(/<[^>]*>?/g, '');
+
+          // description 에서 http 나 https 링크가 있을경우 <a href="URL">링크</a> 로 변환
+          description = description.replace(/https?:\/\/[^\s]+/g, function(url) {
+            return '<a href="' + url + '" target="_blank">링크</a>';
+          });
+  
+          // description 에 !aaa.png! 와 같은 파일 링크가 있을경우 issue.attachments 에서 찾아서 <img src="URL" /> 로 변환
+          description = description.replace(/!([^!]+)!/g, function(match, filename) {
+            var attachment = issue.attachments.find(function(attachment) {
+              return attachment.filename === filename;
+            });
+            if (attachment) {
+              //alert( '<img src=' + attachment.url + '" />' );
+              return '<img class="filecontent image" src="' + attachment.url + '" width="100%" />';
+            }
+            return match; // 첨부파일을 찾지 못한 경우 원본 텍스트 유지
+          });
+
+          // description 에 {{video(aaaaa.mp4)}} 와 같은 파일 링크가 있을경우 issue.attachments 에서 찾아서 <embed src="URL" /> 로 변환
+          description = description.replace(/\{\{video\((.+?)\)\}\}/g, function(match, filename) {
+            var attachment = issue.attachments.find(function(attachment) {
+              return attachment.filename === filename;
+            });
+            if (attachment) {
+              return '<video autoplay loop controls style="width: 100%; height: auto;"><source src="' + attachment.url + '" width="100%" /></video>';
+            }
+            return match; // 첨부파일을 찾지 못한 경우 원본 텍스트 유지
+          });
+
+          var lines = description.split(/\r?\n/);
+          // 빈 줄 제거
+          lines = lines.filter(function(line) {
+              return line.trim().length > 0;
+          });
+
+          /*
+          // 줄바꿈으로 분할하여 최대 7줄만 선택
+          if (lines.length > 7) {
+              lines = lines.slice(0, 7);
+              lines.push('...'); // 더 많은 내용이 있음을 표시
+          } 
+          */       
+          // HTML용 줄바꿈으로 변환
+          description = lines.join('<br>');
+          tooltip.find('.issue-description-section').css('display', 'block');
+        }
+        else
+        {
+          tooltip.find('.issue-description-section').css('display', 'none');
+        }
+
+        // 기본 정보 적용
+        tooltip.find('.issue-tracker').text(issue.tracker || '');
+        tooltip.find('.issue-id').text('#' + issue.id);
+        tooltip.find('.issue-subject').text(issue.subject || '');
+        tooltip.find('.issue-project').text(issue.project || '');
+        tooltip.find('.issue-description').html(description || '');
+        tooltip.find('.issue-status').text(issue.status || '');
+        tooltip.find('.issue-priority').text(issue.priority || '');
+        tooltip.find('.issue-assigned-to').text(issue.assigned_to || '-');
+        tooltip.find('.issue-author').text(issue.author || '-');
+        tooltip.find('.issue-worker').text(issue.worker || '-');
+        tooltip.find('.issue-category').text(issue.category || '-');
+        tooltip.find('.issue-fixed-version').html(issue.fixed_version || '-');
+        tooltip.find('.issue-start-date').text(formatDate(issue.start_date));
+        tooltip.find('.issue-due-date').text(formatDate(issue.due_date));
+        tooltip.find('.issue-done-ratio').text(( issue.done_ratio || 0 ) + '%');
+        tooltip.find('.issue-spent-hours').text(issue.spent_hours || 0);
+        tooltip.find('.issue-work-period').text(formatWorkPeriod(issue.begin_time, issue.end_time));
+        tooltip.find('.issue-created-on').text(formatDateTime(issue.created_on));
+        tooltip.find('.issue-updated-on').text(formatDateTime(issue.updated_on));
+        tooltip.find('.issue-estimated-hours').text(formatEstimatedHours(issue.estimated_hours));
+
+        // 진행률 바 업데이트
+        tooltip.find('.progress-fill').css('width', (issue.done_ratio || 0) + '%');
+        
+        // 하위 이슈들 처리
+        var childrenContainer = tooltip.find('.issue-childrens');
+        childrenContainer.empty();
+        
+        if (issue.childrens && issue.childrens.length > 0) {
+          tooltip.find('.children-count').text(issue.childrens.length);
+          
+          issue.childrens.forEach(function(child) {
+              var childHtml = '<div class="child-issue" style="border-left: 3px solid #ddd; padding: 4px 6px; margin: 2px 0; background: #f9f9f9; font-size: 10px;">' +
+              '<div class="child-header" style="margin-bottom: 2px;">' +
+              '<a href="/issues/' + child.id + '" target="_blank"><span class="child-id" style="color: #169; font-weight: bold;">#' + child.id + '</span></a>: ' +
+              '<span class="child-subject" style="color: #333;">' + (child.subject || '') + '</span>' +
+              '</div>' +
+              '<div class="child-meta" style="color: #666;">' +
+              '<span class="child-status" style="font-weight: bold;">' + (child.status || '') + '</span> ' +
+              '- <span class="child-done-ratio">' + (child.done_ratio || 0) + '</span> ' +
+              '<div class="child-progress-bar" style="width: 40px; height: 6px; background: #f0f0f0; border: 1px solid #ddd; display: inline-block; margin-left: 4px; position: relative;">' +
+              '<div class="child-progress-fill" style="height: 100%; background: #759fcf; width: ' + (child.done_ratio || 0) + '%;"></div>' +
+              '</div>' +
+              '</div>' +
+              '</div>';
+              childrenContainer.append(childHtml);
+          });
+          tooltip.find('.issue-children-section').css('display', 'block');
+        } else {
+          tooltip.find('.children-count').text('0');
+          tooltip.find('.issue-children-section').css('display', 'none');
+        }
+
+        // 첨부파일 처리
+        var attachments = issue.attachments || [];
+        if( attachments.length > 0 ) {
+          tooltip.find('.attachments-count').text(attachments.length);
+          var attachmentsContainer = tooltip.find('.issue-attachments');
+          attachmentsContainer.empty();
+          attachments.forEach(function(attachment) {
+            var fileIcon = getFileIcon(attachment.content_type);
+            var attachmentHtml = '<div class="attachment-item">' + fileIcon + '<a href="' + attachment.url + '" target="_blank">' + attachment.filename + '</a></div>';
+            attachmentsContainer.append(attachmentHtml);
+          });
+          tooltip.find('.issue-attachments-section').css('display', 'block');
+        }
+        else {
+          tooltip.find('.issue-attachments-section').css('display', 'none');
+        }
+    }
+
+    function hideTooltip() {
+        clearTimeout(tooltipTimer);
+        clearTimeout(hideTimer);
+        
+        hideTimer = setTimeout(function() {
+            // 툴팁 내의 모든 비디오 재생 멈추기
+            tooltip.find('video').each(function() {
+                this.pause();
+                this.currentTime = 0;
+            });
+            
+            //tooltip_loading.css('display', 'none');
+            tooltip.css('display', 'none');
+        }, 200); // 0.2초 딜레이
+    }
+
+    function setupTooltip() {
+        // 공통 이벤트 핸들러를 하나의 함수로 정의
+        function attachTooltipEvents(selector) {
+            $(selector).each(function(index, element) {
+                var $element = $(element); // jQuery 객체로 래핑
+                
+                // selector 안에 subject 가 있고 그 안에 a 가 있는경우 selector 를 그 a 로 변경
+                if( $element.find('.subject a').length > 0 ) {
+                    $element = $element.find('.subject a');
+                }
+
+                $element.on('mouseenter', function(e) {
+                    var issueId = null;
+                    
+                    // id 속성에서 issue-xxx 패턴 검출
+                    var elementId = $(this).attr('id');
+                    if (elementId && elementId.startsWith('issue-')) {
+                        issueId = elementId.replace('issue-', '');
+                    }
+
+                    // href 속성에서 /issues/xxx 패턴 검출
+                    if( issueId == null && $(this).attr('href') ) {
+                      var href = $(this).attr('href');
+                      var match = href.match(/^\/issues\/(\d+)$/);
+                      if( match ) {
+                        issueId = match[1];
+                      }
+                    }
+
+                    // data-id 속성에서 xxx 패턴 검출
+                    if( issueId == null && $(this).attr('data-id') ) {
+                      issueId = $(this).attr('data-id');
+                    }
+                    
+                    // id에서 찾지 못했으면 class 속성에서 issue-xxx 패턴 검출
+                    if (!issueId) {
+                        var elementClass = $(this).attr('class');
+                        if (elementClass) {
+                            var match = elementClass.match(/issue-(\d+)/);
+                            if (match) {
+                                issueId = match[1];
+                            }
+                        }
+                    }
+                    
+                    if (issueId && /^\d+$/.test(issueId)) {
+                        showTooltip(e, issueId);
+                    }
+                }).on('mouseleave', function() {
+                    hideTooltip();
+                }).on('mousemove', function(e) {
+                  /*
+                    if (tooltip.css('display') === 'block') {
+                        tooltip.css({
+                            'left': e.pageX + 10 + 'px',
+                            'top': e.pageY + 10 + 'px'
+                        });
+                    }
+                    */
+                });
+            }); // .each() 닫는 괄호 추가
+        }
+
+        // 각 선택자에 동일한 이벤트 핸들러 적용
+        attachTooltipEvents('.hascontextmenu');
+    }
+
+    // 페이지 로딩이 완료되면 툴팁 설정 실행
+    $(document).ready(function() {
+        setupTooltip();
+    });
+
+</script>
+

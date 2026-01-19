@@ -1,12 +1,19 @@
-<div class="tx-issue-tooltip-loading" style="display: none; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 12px; width: 500px; z-index: 39; font-size: 12px;">
+<div class="tx-issue-tooltip-loading" style="display: none; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 12px; width: 500px; z-index: 15000; font-size: 12px;">
   <div class="issue-loading" style="font-weight: bold; color: #333; margin-bottom: 4px;">
     <span class="issue-loading-text" style="color: #666; font-size: 11px;">이슈 정보를 불러오는 중입니다...</span>
   </div>
 </div>
 
-<div class="tx-issue-tooltip" style="display: none; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 12px; width: 500px; z-index: 39; font-size: 12px;">
+<div class="tx-issue-tooltip" style="display: none; position: absolute; background: #fff; border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 12px; width: 500px; z-index: 15000; font-size: 12px;">
   <!-- 이슈 헤더 -->
-  <div class="issue-header" style="border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 4px;">
+  <div class="issue-header" style="border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 4px; position: relative; padding-right: 95px;">
+    <a class="issue-schedule-summary-link icon icon-stats"
+       href="#"
+       target="_blank"
+       style="position: absolute; top: 0; right: 0; display: none;">
+      <svg class="s18 icon-svg" aria-hidden="true"><use href="<%= asset_path('icons.svg') %>#icon--stats"></use></svg>
+      <span class="icon-label" style="font-size: 11px; color: #169;">일정요약</span>
+    </a>
     <div class="issue-title" style="font-weight: bold; color: #333; margin-bottom: 4px;">
       <span class="issue-tracker tracker" style="color: #666; font-size: 11px;"></span>
       <span class="issue-id id" style="color: #169; font-weight: bold;"></span>:
@@ -107,7 +114,9 @@
   <div class="issue-dates-section" style="margin-bottom: 2px; font-size: 10px; color: #999; border-top: 1px solid #eee; padding-top: 2px;">
     <table style="width: 100%; cell-padding: 0px; cell-spacing: 0px;">
       <tr>
-        <td align="left"><span style="color: #666; padding: 0px 0px;">생성일:</span>
+        <td align="left"><span style="color: #666; padding: 0px 0px;">생성자:</span>
+        <span class="issue-author author"></span></td>
+        <td align="right"><span style="color: #666; padding: 0px 0px;">생성일:</span>
         <span class="issue-created-on created_on"></span></td>
         <td align="right"><span style="color: #666; padding: 0px 0px;">수정일:</span>
         <span class="issue-updated-on updated_on"></span></td>
@@ -123,8 +132,6 @@
     <div class="child-header" style="margin-bottom: 2px;">
       <span class="child-id" style="color: #169; font-weight: bold;"></span>:
       <span class="child-subject" style="color: #333;"></span>
-    </div>
-    <div class="child-meta" style="color: #666;">
       <span class="child-status" style="font-weight: bold;"></span>
       - <span class="child-done-ratio">0%</span>
       <div class="child-progress-bar" style="width: 40px; height: 6px; background: #f0f0f0; border: 1px solid #ddd; display: inline-block; margin-left: 4px; position: relative;">
@@ -189,9 +196,10 @@
         
         tooltipTimer = setTimeout(function() {
 
-            // 툴팁 표시
+            // 툴팁 초기 위치 설정 (화면 밖에서 임시로 표시하여 높이 계산)
             tooltip.css({
-                'display': 'none',
+                'display': 'block',
+                'visibility': 'hidden',
                 'left': e.pageX + 10 + 'px',
                 'top': e.pageY + 10 + 'px'
             });
@@ -199,6 +207,8 @@
             // 캐시된 데이터가 있으면 사용
             if (cachedIssueData[issueId]) {
                 applyIssueDataToTooltip(cachedIssueData[issueId]);
+                // 위치 재조정
+                adjustTooltipPosition(e);
             } else {
                 // AJAX로 이슈 디테일 요청
                 var projectIdentifier = '<%= @project ? @project.identifier : "" %>';
@@ -213,27 +223,14 @@
                     cachedIssueData[issueId] = data;
                     // 툴팁에 적용
                     applyIssueDataToTooltip(data);
+                    // 위치 재조정
+                    adjustTooltipPosition(e);
                 },
                 error: function() {
                     console.error('Failed to load issue detail for issue #' + issueId);
+                    tooltip.css('display', 'none');
                 }
                 });
-            }
-            
-            // 화면 경계 체크
-            var windowWidth = $(window).width();
-            var windowHeight = $(window).height();
-            var tooltipWidth = tooltip.outerWidth();
-            var tooltipHeight = tooltip.outerHeight();
-            
-            // 오른쪽 경계 체크
-            if (e.pageX + 10 + tooltipWidth > windowWidth) {
-                tooltip.css('left', (e.pageX - tooltipWidth - 10) + 'px');
-            }
-            
-            // 하단 경계 체크
-            if (e.pageY + 10 + tooltipHeight > windowHeight + $(window).scrollTop()) {
-                tooltip.css('top', (e.pageY - tooltipHeight - 10) + 'px');
             }
         }, 500); // 0.5초 딜레이
     }
@@ -351,21 +348,21 @@
         //tooltip_loading.css('display', 'none');
         tooltip.css('display', 'block');
 
-        // description 처리: HTML 태그 제거 및 최대 5라인으로 제한
+        // description 처리: HTML 태그 제거
         var description = issue.description || '';
         if( description.length > 0 ) {
-          // HTML 태그 제거
-          description = description.replace(/<[^>]*>?/g, '');
 
+          // HTML 태그 제거
+          // description = description.replace(/<[^>]*>?/g, '');
           // description 에서 http 나 https 링크가 있을경우 <a href="URL">링크</a> 로 변환
-          description = description.replace(/https?:\/\/[^\s]+/g, function(url) {
-            return '<a href="' + url + '" target="_blank">링크</a>';
-          });
-  
+          // description = description.replace(/https?:\/\/[^\s]+/g, function(url) { return '<a href="' + url + '" target="_blank">링크</a>'; });
+
           // description 에 !aaa.png! 와 같은 파일 링크가 있을경우 issue.attachments 에서 찾아서 <img src="URL" /> 로 변환
           description = description.replace(/!([^!]+)!/g, function(match, filename) {
+            var decodedFilename = decodeURIComponent(filename);
             var attachment = issue.attachments.find(function(attachment) {
-              return attachment.filename === filename;
+              var decodedAttachmentName = decodeURIComponent(attachment.filename);
+              return decodedAttachmentName === decodedFilename;
             });
             if (attachment) {
               //alert( '<img src=' + attachment.url + '" />' );
@@ -409,7 +406,7 @@
 
         // 기본 정보 적용
         tooltip.find('.issue-tracker').text(issue.tracker || '');
-        tooltip.find('.issue-id').text('#' + issue.id);
+        tooltip.find('.issue-id').html('<a href="/issues/' + issue.id + '" target="_blank">#' + issue.id + '</a>');
         tooltip.find('.issue-subject').text(issue.subject || '');
         tooltip.find('.issue-project').text(issue.project || '');
         tooltip.find('.issue-description').html(description || '');
@@ -429,6 +426,18 @@
         tooltip.find('.issue-updated-on').text(formatDateTime(issue.updated_on));
         tooltip.find('.issue-estimated-hours').text(formatEstimatedHours(issue.estimated_hours));
 
+        // 일정요약 링크 (최상위 부모 기준)
+        // Redmine의 /projects/:id 는 보통 numeric id가 아니라 identifier를 사용
+        var projectKey = issue.project_identifier || issue.project_id;
+        var topParentId = issue.top_parent_id || issue.id;
+        var summaryLink = tooltip.find('.issue-schedule-summary-link');
+        if (projectKey && topParentId) {
+          var summaryUrl = '/projects/' + encodeURIComponent(projectKey) + '/milestone/schedule_summary?issue_ids=' + encodeURIComponent(topParentId);
+          summaryLink.attr('href', summaryUrl).show();
+        } else {
+          summaryLink.hide();
+        }
+
         // 진행률 바 업데이트
         tooltip.find('.progress-fill').css('width', (issue.done_ratio || 0) + '%');
         
@@ -440,16 +449,18 @@
           tooltip.find('.children-count').text(issue.childrens.length);
           
           issue.childrens.forEach(function(child) {
-              var childHtml = '<div class="child-issue" style="border-left: 3px solid #ddd; padding: 4px 6px; margin: 2px 0; background: #f9f9f9; font-size: 10px;">' +
-              '<div class="child-header" style="margin-bottom: 2px;">' +
+              var childHtml = '<div class="child-issue" style="border-left: 3px solid #ddd; padding: 4px 6px; margin: 2px 0px 0px ' + (child.depth * 10) + 'px; background: #f9f9f9; font-size: 10px;">' +
+              '<div class="child-header" style="margin-bottom: 2px; display: flex; justify-content: space-between; align-items: center;">' +
+              '<div>' +
               '<a href="/issues/' + child.id + '" target="_blank"><span class="child-id" style="color: #169; font-weight: bold;">#' + child.id + '</span></a>: ' +
               '<span class="child-subject" style="color: #333;">' + (child.subject || '') + '</span>' +
               '</div>' +
-              '<div class="child-meta" style="color: #666;">' +
+              '<div style="display: flex; align-items: center; gap: 4px;">' +
               '<span class="child-status" style="font-weight: bold;">' + (child.status || '') + '</span> ' +
-              '- <span class="child-done-ratio">' + (child.done_ratio || 0) + '</span> ' +
+              '- <span class="child-done-ratio">' + (child.done_ratio || 0) + '%</span> ' +
               '<div class="child-progress-bar" style="width: 40px; height: 6px; background: #f0f0f0; border: 1px solid #ddd; display: inline-block; margin-left: 4px; position: relative;">' +
               '<div class="child-progress-fill" style="height: 100%; background: #759fcf; width: ' + (child.done_ratio || 0) + '%;"></div>' +
+              '</div>' +
               '</div>' +
               '</div>' +
               '</div>';
@@ -495,6 +506,40 @@
         }, 200); // 0.2초 딜레이
     }
 
+    // 툴팁 위치 조정 함수 (새로 추가)
+    function adjustTooltipPosition(e) {
+        // 화면 경계 체크 (실제 높이로 정확한 계산)
+        var windowWidth = $(window).width();
+        var windowHeight = $(window).height();
+        var scrollTop = $(window).scrollTop();
+        var tooltipWidth = tooltip.outerWidth();
+        var tooltipHeight = tooltip.outerHeight(); // 이제 정확한 높이를 얻을 수 있음
+        
+        var left = e.pageX + 10;
+        var top = e.pageY + 10;
+        
+        // 오른쪽 경계 체크
+        if (left + tooltipWidth > windowWidth) {
+            left = e.pageX - tooltipWidth - 10;
+        }
+        
+        // 하단 경계 체크 (스크롤 위치 고려)
+        if (top + tooltipHeight > windowHeight + scrollTop) {
+            top = e.pageY - tooltipHeight - 10;
+            // 위쪽으로도 벗어나는 경우 마우스 위치에서 적절히 조정
+            if (top < scrollTop) {
+                top = scrollTop + 10;
+            }
+        }
+        
+        // 최종 위치 적용 및 표시
+        tooltip.css({
+            'left': left + 'px',
+            'top': top + 'px',
+            'visibility': 'visible'
+        });
+    }
+
     function setupTooltip() {
         // 공통 이벤트 핸들러를 하나의 함수로 정의
         function attachTooltipEvents(selector) {
@@ -510,10 +555,12 @@
                     var issueId = null;
                     
                     // id 속성에서 issue-xxx 패턴 검출
+                    /*
                     var elementId = $(this).attr('id');
                     if (elementId && elementId.startsWith('issue-')) {
                         issueId = elementId.replace('issue-', '');
                     }
+                    */
 
                     // href 속성에서 /issues/xxx 패턴 검출
                     if( issueId == null && $(this).attr('href') ) {
@@ -527,6 +574,11 @@
                     // data-id 속성에서 xxx 패턴 검출
                     if( issueId == null && $(this).attr('data-id') ) {
                       issueId = $(this).attr('data-id');
+                    }
+
+                    // data-issue-tooltip 속성에서 xxx 패턴 검출
+                    if( issueId == null && $(this).attr('data-issue-tooltip') ) {
+                      issueId = $(this).attr('data-issue-tooltip');
                     }
                     
                     // id에서 찾지 못했으면 class 속성에서 issue-xxx 패턴 검출
@@ -560,6 +612,19 @@
 
         // 각 선택자에 동일한 이벤트 핸들러 적용
         attachTooltipEvents('.hascontextmenu');
+        
+        // 스케쥴바 이슈 링크 아이콘에도 툴팁 적용
+        attachTooltipEvents('[data-issue-tooltip]');
+        
+        // 동적으로 추가되는 이슈 링크 아이콘을 위한 이벤트 위임
+        $(document).on('mouseenter', '[data-issue-tooltip]', function(e) {
+            var issueId = $(this).attr('data-issue-tooltip');
+            if (issueId && /^\d+$/.test(issueId)) {
+                showTooltip(e, issueId);
+            }
+        }).on('mouseleave', '[data-issue-tooltip]', function() {
+            hideTooltip();
+        });
     }
 
     // 페이지 로딩이 완료되면 툴팁 설정 실행

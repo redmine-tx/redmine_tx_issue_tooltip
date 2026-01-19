@@ -10,16 +10,26 @@ class IssueTooltipController < ApplicationController
             render json: { success: false, error: 'Permission denied' }
             return
         end
-        
+
+        # 재귀적으로 children을 처리하는 메서드 호출
+        childrens = build_children_hierarchy(@issue.children, 0)
+
+        # 최상위 부모 이슈 찾기 (일정요약 링크에서 사용)
+        top_issue = @issue
+        top_issue = top_issue.parent while top_issue.parent.present?
+
         # 이슈 상세 정보 JSON 구성
         issue_data = {
           id: @issue.id,
           subject: @issue.subject,
-          description: @issue.description,
+          description: @issue.description ? Redmine::WikiFormatting::Textile::Formatter.new(@issue.description).to_html : nil,
           status: @issue.status.name,
           priority: @issue.priority.name,
           tracker: @issue.tracker.name,
           project: @issue.project.name,
+          project_id: @issue.project_id,
+          project_identifier: @issue.project.identifier,
+          top_parent_id: top_issue.id,
           author: @issue.author.name,
           assigned_to: @issue.assigned_to ? @issue.assigned_to.name : nil,
           category: @issue.category ? @issue.category.name : nil,
@@ -32,14 +42,8 @@ class IssueTooltipController < ApplicationController
           estimated_hours: @issue.estimated_hours,
           spent_hours: @issue.spent_hours,
           parent: @issue.parent ? "##{@issue.parent.id} #{@issue.parent.subject}" : nil,
-          childrens: @issue.children.map do |child|
-            {
-              id: child.id,
-              subject: child.subject,
-              status: child.status.name,
-              done_ratio: child.done_ratio
-            }
-          end,
+          # 재귀적으로 처리된 childrens 사용
+          childrens: build_children_hierarchy(@issue.children, 0),
           # 마일스톤 관련 추가 정보
           worker: @issue.worker_id ? Principal.find(@issue.worker_id).name : nil,
           begin_time: @issue.respond_to?(:begin_time) ? @issue.begin_time : nil,
@@ -123,6 +127,30 @@ class IssueTooltipController < ApplicationController
   end
 
   private
+
+  # 재귀적으로 children 계층 구조를 구성하는 메서드
+  def build_children_hierarchy(children, current_depth)
+    result = []
+    
+    children.select { |child| !child.is_discarded? }.each do |child|
+      child_data = {
+        depth: current_depth,
+        id: child.id,
+        subject: child.subject,
+        status: child.status.name,
+        done_ratio: child.done_ratio
+      }
+      
+      result << child_data
+      
+      # child에 하위 children이 있으면 재귀적으로 처리
+      if child.children.any?
+        result.concat(build_children_hierarchy(child.children, current_depth + 1))
+      end
+    end
+    
+    result
+  end
 
   def render_404
     head :not_found

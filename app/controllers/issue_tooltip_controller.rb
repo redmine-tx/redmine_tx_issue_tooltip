@@ -138,7 +138,8 @@ class IssueTooltipController < ApplicationController
         id: child.id,
         subject: child.subject,
         status: child.status.name,
-        done_ratio: child.done_ratio
+        done_ratio: child.done_ratio,
+        due_date: child.due_date
       }
       
       result << child_data

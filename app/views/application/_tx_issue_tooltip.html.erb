@@ -215,7 +215,8 @@
 .child-due-date {
   white-space: nowrap;
 }
-.child-due-date.is-set {
+.child-due-date.is-set,
+.child-due-date.is-implemented {
   color: #777;
 }
 .child-due-date.is-missing {
@@ -414,6 +415,10 @@
         if (child.due_date) {
             dueDateText = formatShortDate(child.due_date);
             dueDateClassName += ' is-set';
+        } else if (child.is_implemented) {
+            dueDateText = '구현끝';
+            dueDateClassName += ' is-implemented';
+            dueDateTitle = '구현 완료 상태';
         } else if (child.is_exception || child.is_sidejob) {
             return '';
         } else {

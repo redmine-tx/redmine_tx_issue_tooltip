@@ -143,6 +143,7 @@ class IssueTooltipController < ApplicationController
         status: child.status.name,
         done_ratio: child.done_ratio,
         due_date: child.due_date,
+        is_implemented: issue_status_implemented?(child),
         is_exception: is_exception,
         is_sidejob: is_sidejob
       }
@@ -169,6 +170,13 @@ class IssueTooltipController < ApplicationController
     if defined?(Tracker) && Tracker.respond_to?(class_predicate_method)
       return Tracker.public_send(class_predicate_method, tracker.id)
     end
+
+    false
+  end
+
+  def issue_status_implemented?(issue)
+    return issue.is_implemented? if issue.respond_to?(:is_implemented?)
+    return IssueStatus.is_implemented?(issue.status_id) if defined?(IssueStatus) && IssueStatus.respond_to?(:is_implemented?)
 
     false
   end

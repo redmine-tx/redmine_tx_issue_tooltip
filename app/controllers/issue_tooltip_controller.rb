@@ -133,13 +133,18 @@ class IssueTooltipController < ApplicationController
     result = []
     
     children.select { |child| !child.is_discarded? }.each do |child|
+      is_exception = tracker_flag_enabled?(child.tracker, :is_exception)
+      is_sidejob = tracker_flag_enabled?(child.tracker, :is_sidejob)
+
       child_data = {
         depth: current_depth,
         id: child.id,
         subject: child.subject,
         status: child.status.name,
         done_ratio: child.done_ratio,
-        due_date: child.due_date
+        due_date: child.due_date,
+        is_exception: is_exception,
+        is_sidejob: is_sidejob
       }
       
       result << child_data
@@ -151,6 +156,21 @@ class IssueTooltipController < ApplicationController
     end
     
     result
+  end
+
+  def tracker_flag_enabled?(tracker, flag_name)
+    return false unless tracker
+
+    predicate_method = "#{flag_name}?"
+    return tracker.public_send(predicate_method) if tracker.respond_to?(predicate_method)
+    return tracker.public_send(flag_name) if tracker.respond_to?(flag_name)
+
+    class_predicate_method = "#{flag_name}?"
+    if defined?(Tracker) && Tracker.respond_to?(class_predicate_method)
+      return Tracker.public_send(class_predicate_method, tracker.id)
+    end
+
+    false
   end
 
   def render_404

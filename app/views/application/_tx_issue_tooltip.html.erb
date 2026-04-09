@@ -163,6 +163,70 @@
 .child-progress-fill {
   border-radius: 1px;
 }
+.child-issue {
+  border-left: 3px solid #ddd;
+  padding: 4px 6px;
+  background: #f9f9f9;
+  font-size: 10px;
+  border-radius: 3px;
+}
+.child-issue.is-exception {
+  background: #f3f4f6;
+  border-left-color: #9ca3af;
+}
+.child-issue.is-sidejob {
+  background: #fff7e6;
+  border-left-color: #d4a64f;
+}
+.child-issue.is-exception.is-sidejob {
+  background: #f5f1e6;
+  border-left-color: #b28a42;
+}
+.child-header {
+  margin-bottom: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.child-title {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.child-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.child-id {
+  color: #169;
+  font-weight: bold;
+}
+.child-subject {
+  color: #333;
+}
+.child-status {
+  font-weight: bold;
+}
+.child-separator {
+  color: #777;
+}
+.child-due-date {
+  white-space: nowrap;
+}
+.child-due-date.is-set {
+  color: #777;
+}
+.child-due-date.is-missing {
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: bold;
+}
+.child-due-date.is-missing {
+  background: #fdecea;
+  color: #b42318;
+}
 .issue-childrens::-webkit-scrollbar {
   width: 6px;
 }
@@ -335,6 +399,32 @@
         return Math.round(hours) + '시간';
     }
 
+    function getChildIssueClassNames(child) {
+        var classNames = ['child-issue'];
+        if (child.is_exception) classNames.push('is-exception');
+        if (child.is_sidejob) classNames.push('is-sidejob');
+        return classNames.join(' ');
+    }
+
+    function getChildDueDateHtml(child) {
+        var dueDateText = '';
+        var dueDateClassName = 'child-due-date';
+        var dueDateTitle = '마감일';
+
+        if (child.due_date) {
+            dueDateText = formatShortDate(child.due_date);
+            dueDateClassName += ' is-set';
+        } else if (child.is_exception || child.is_sidejob) {
+            return '';
+        } else {
+            dueDateText = '미설정';
+            dueDateClassName += ' is-missing';
+            dueDateTitle = '마감일 미설정';
+        }
+
+        return '<span class="' + dueDateClassName + '" title="' + dueDateTitle + '">' + dueDateText + '</span>';
+    }
+
     // 파일 타입에 따른 아이콘 반환 함수
     function getFileIcon(contentType) {
         if (!contentType) contentType = '';
@@ -478,18 +568,17 @@
           tooltip.find('.children-count').text(issue.childrens.length);
           
           issue.childrens.forEach(function(child) {
-              var childDueDateHtml = child.due_date ?
-              '<span class="child-due-date" title="마감일" style="color: #777; white-space: nowrap;">' + formatShortDate(child.due_date) + '</span>' : '';
-              var childHtml = '<div class="child-issue" style="border-left: 3px solid #ddd; padding: 4px 6px; margin: 2px 0px 0px ' + (child.depth * 10) + 'px; background: #f9f9f9; font-size: 10px;">' +
-              '<div class="child-header" style="margin-bottom: 2px; display: flex; justify-content: space-between; align-items: center;">' +
-              '<div>' +
-              '<a href="/issues/' + child.id + '" target="_blank"><span class="child-id" style="color: #169; font-weight: bold;">#' + child.id + '</span></a>: ' +
-              '<span class="child-subject" style="color: #333;">' + (child.subject || '') + '</span>' +
+              var childHtml = '<div class="' + getChildIssueClassNames(child) + '" style="margin: 2px 0px 0px ' + (child.depth * 10) + 'px;">' +
+              '<div class="child-header">' +
+              '<div class="child-title">' +
+              '<a href="/issues/' + child.id + '" target="_blank"><span class="child-id">#' + child.id + '</span></a>: ' +
+              '<span class="child-subject">' + (child.subject || '') + '</span>' +
               '</div>' +
-              '<div style="display: flex; align-items: center; gap: 4px;">' +
-              childDueDateHtml +
-              '<span class="child-status" style="font-weight: bold;">' + (child.status || '') + '</span> ' +
-              '- <span class="child-done-ratio">' + (child.done_ratio || 0) + '%</span> ' +
+              '<div class="child-meta">' +
+              getChildDueDateHtml(child) +
+              '<span class="child-status">' + (child.status || '') + '</span>' +
+              '<span class="child-separator">-</span>' +
+              '<span class="child-done-ratio">' + (child.done_ratio || 0) + '%</span>' +
               '<div class="child-progress-bar" style="width: 40px; height: 6px; background: #f0f0f0; border: 1px solid #ddd; display: inline-block; margin-left: 4px; position: relative;">' +
               '<div class="child-progress-fill" style="height: 100%; background: #759fcf; width: ' + (child.done_ratio || 0) + '%;"></div>' +
               '</div>' +

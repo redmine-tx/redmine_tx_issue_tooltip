@@ -219,6 +219,10 @@
 .child-due-date.is-implemented {
   color: #777;
 }
+.child-due-date.is-set.is-later-than-parent {
+  color: #d17b0f;
+  font-weight: bold;
+}
 .child-due-date.is-missing {
   padding: 1px 4px;
   border-radius: 3px;
@@ -355,6 +359,22 @@
         return dateParts.year.slice(-2) + '/' + dateParts.month + '/' + dateParts.day;
     }
 
+    function getComparableDateValue(dateString) {
+        var dateParts = parseDateParts(dateString);
+        if (!dateParts) return null;
+
+        return dateParts.year + dateParts.month + dateParts.day;
+    }
+
+    function isLaterThanParentDueDate(childDueDate, parentDueDate) {
+        var childDateValue = getComparableDateValue(childDueDate);
+        var parentDateValue = getComparableDateValue(parentDueDate);
+
+        if (!childDateValue || !parentDateValue) return false;
+
+        return childDateValue > parentDateValue;
+    }
+
     // 시간 차이 계산 함수
     function calculateHoursDifference(beginTime, endTime) {
         if (!beginTime || !endTime) return null;
@@ -407,7 +427,7 @@
         return classNames.join(' ');
     }
 
-    function getChildDueDateHtml(child) {
+    function getChildDueDateHtml(child, parentDueDate) {
         var dueDateText = '';
         var dueDateClassName = 'child-due-date';
         var dueDateTitle = '마감일';
@@ -415,6 +435,10 @@
         if (child.due_date) {
             dueDateText = formatShortDate(child.due_date);
             dueDateClassName += ' is-set';
+            if (isLaterThanParentDueDate(child.due_date, parentDueDate)) {
+                dueDateClassName += ' is-later-than-parent';
+                dueDateTitle = '부모 일감보다 마감일이 늦음';
+            }
         } else if (child.is_implemented) {
             dueDateText = '구현끝';
             dueDateClassName += ' is-implemented';
@@ -580,7 +604,7 @@
               '<span class="child-subject">' + (child.subject || '') + '</span>' +
               '</div>' +
               '<div class="child-meta">' +
-              getChildDueDateHtml(child) +
+              getChildDueDateHtml(child, issue.due_date) +
               '<span class="child-status">' + (child.status || '') + '</span>' +
               '<span class="child-separator">-</span>' +
               '<span class="child-done-ratio">' + (child.done_ratio || 0) + '%</span>' +

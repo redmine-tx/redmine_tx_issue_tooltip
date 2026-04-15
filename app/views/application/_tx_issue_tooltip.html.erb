@@ -691,6 +691,10 @@
     }
 
     function setupTooltip() {
+        function isTooltipSuppressedEvent(e) {
+            return $(e.target).closest('.tx-issue-no-tooltip').length > 0;
+        }
+
         // 공통 이벤트 핸들러를 하나의 함수로 정의
         function attachTooltipEvents(selector) {
             $(selector).each(function(index, element) {
@@ -702,6 +706,10 @@
                 }
 
                 $element.on('mouseenter', function(e) {
+                    if (isTooltipSuppressedEvent(e)) {
+                        return;
+                    }
+
                     var issueId = null;
                     
                     // id 속성에서 issue-xxx 패턴 검출
@@ -768,6 +776,10 @@
         
         // 동적으로 추가되는 이슈 링크 아이콘을 위한 이벤트 위임
         $(document).on('mouseenter', '[data-issue-tooltip]', function(e) {
+            if (isTooltipSuppressedEvent(e)) {
+                return;
+            }
+
             var issueId = $(this).attr('data-issue-tooltip');
             if (issueId && /^\d+$/.test(issueId)) {
                 showTooltip(e, issueId);

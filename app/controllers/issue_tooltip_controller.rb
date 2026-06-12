@@ -22,7 +22,10 @@ class IssueTooltipController < ApplicationController
         issue_data = {
           id: @issue.id,
           subject: @issue.subject,
-          description: @issue.description ? Redmine::WikiFormatting::Textile::Formatter.new(@issue.description).to_html : nil,
+          # 본문은 하드코딩 포맷터가 아니라, 현재 설정된 위키 포맷(textile/markdown/
+          # nx_html)으로 정식 렌더한다. textilizable이 매크로·첨부 이미지·#123/[[위키]]
+          # 링크까지 해석하고 새니타이즈도 한다 → 이슈 페이지와 동일한 안전한 HTML.
+          description: @issue.description.present? ? view_context.textilizable(@issue, :description) : nil,
           status: @issue.status.name,
           priority: @issue.priority.name,
           tracker: @issue.tracker.name,

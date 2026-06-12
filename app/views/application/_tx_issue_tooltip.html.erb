@@ -85,7 +85,7 @@
     <table style="width: 100%;">
       <tr>
         <td colspan="2"><span style="color: #666; padding: 2px 4px;">설명:</span>
-        <span class="issue-description description"></span></td>
+        <span class="issue-description description wiki" style="display: block; max-height: 260px; overflow: auto; margin-top: 2px;"></span></td>
       </tr>
     </table>
   </div>
@@ -496,59 +496,14 @@
         //tooltip_loading.css('display', 'none');
         tooltip.css('display', 'block');
 
-        // description 처리: HTML 태그 제거
+        // 본문: 서버(textilizable)가 설정 포맷(textile/markdown/nx_html)대로 렌더·
+        // 새니타이즈한 최종 HTML이다. 매크로·첨부 이미지·#123/[[위키]] 링크가 모두
+        // 서버에서 해석됐으므로, 클라이언트 후처리(!파일!·{{video}}·줄바꿈→<br>) 없이
+        // 그대로 표시한다. (예전 textile용 후처리는 HTML 본문을 깨뜨렸음)
         var description = issue.description || '';
-        if( description.length > 0 ) {
-
-          // HTML 태그 제거
-          // description = description.replace(/<[^>]*>?/g, '');
-          // description 에서 http 나 https 링크가 있을경우 <a href="URL">링크</a> 로 변환
-          // description = description.replace(/https?:\/\/[^\s]+/g, function(url) { return '<a href="' + url + '" target="_blank">링크</a>'; });
-
-          // description 에 !aaa.png! 와 같은 파일 링크가 있을경우 issue.attachments 에서 찾아서 <img src="URL" /> 로 변환
-          description = description.replace(/!([^!]+)!/g, function(match, filename) {
-            var decodedFilename = decodeURIComponent(filename);
-            var attachment = issue.attachments.find(function(attachment) {
-              var decodedAttachmentName = decodeURIComponent(attachment.filename);
-              return decodedAttachmentName === decodedFilename;
-            });
-            if (attachment) {
-              //alert( '<img src=' + attachment.url + '" />' );
-              return '<img class="filecontent image" src="' + attachment.url + '" width="100%" />';
-            }
-            return match; // 첨부파일을 찾지 못한 경우 원본 텍스트 유지
-          });
-
-          // description 에 {{video(aaaaa.mp4)}} 와 같은 파일 링크가 있을경우 issue.attachments 에서 찾아서 <embed src="URL" /> 로 변환
-          description = description.replace(/\{\{video\((.+?)\)\}\}/g, function(match, filename) {
-            var attachment = issue.attachments.find(function(attachment) {
-              return attachment.filename === filename;
-            });
-            if (attachment) {
-              return '<video autoplay loop controls style="width: 100%; height: auto;"><source src="' + attachment.url + '" width="100%" /></video>';
-            }
-            return match; // 첨부파일을 찾지 못한 경우 원본 텍스트 유지
-          });
-
-          var lines = description.split(/\r?\n/);
-          // 빈 줄 제거
-          lines = lines.filter(function(line) {
-              return line.trim().length > 0;
-          });
-
-          /*
-          // 줄바꿈으로 분할하여 최대 7줄만 선택
-          if (lines.length > 7) {
-              lines = lines.slice(0, 7);
-              lines.push('...'); // 더 많은 내용이 있음을 표시
-          } 
-          */       
-          // HTML용 줄바꿈으로 변환
-          description = lines.join('<br>');
+        if (description.length > 0) {
           tooltip.find('.issue-description-section').css('display', 'block');
-        }
-        else
-        {
+        } else {
           tooltip.find('.issue-description-section').css('display', 'none');
         }
 

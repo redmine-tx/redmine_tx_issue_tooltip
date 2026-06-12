@@ -151,6 +151,20 @@
 .issue-tooltip td {
   vertical-align: top;
 }
+/* 본문 내 미디어(영상/이미지/임베드)는 툴팁 폭을 넘지 않게 — embedded_video 매크로가
+   <video width='640'>처럼 고정 폭을 내므로 max-width로 제약. width/height 속성이 있는
+   <video>·<img>는 height:auto면 비율 유지. */
+.issue-description img,
+.issue-description video,
+.issue-description iframe,
+.issue-description embed,
+.issue-description object {
+  max-width: 100%;
+  height: auto;
+}
+.issue-description table {
+  max-width: 100%;
+}
 .progress-bar {
   border-radius: 3px;
 }

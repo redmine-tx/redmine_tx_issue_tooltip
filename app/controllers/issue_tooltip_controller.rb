@@ -3,20 +3,12 @@ class IssueTooltipController < ApplicationController
 
   def issue_detail
     begin
-        @issue = Issue.find(params[:id])
-
-        # TODO : 이슈의 프로젝트 ( @issue.project_id )접근 가능한지 권한 체크 해야함
-        unless true
-            render json: { success: false, error: 'Permission denied' }
-            return
-        end
-
-        # 재귀적으로 children을 처리하는 메서드 호출
-        childrens = build_children_hierarchy(@issue.children, 0)
+        @issue = Issue.visible.find(params[:id])
 
         # 최상위 부모 이슈 찾기 (일정요약 링크에서 사용)
         top_issue = @issue
-        top_issue = top_issue.parent while top_issue.parent.present?
+        top_issue = top_issue.parent while top_issue.parent.present? && top_issue.parent.visible?
+        visible_parent = @issue.parent if @issue.parent.present? && @issue.parent.visible?
 
         # 이슈 상세 정보 JSON 구성
         issue_data = {
@@ -44,20 +36,19 @@ class IssueTooltipController < ApplicationController
           done_ratio: @issue.done_ratio,
           estimated_hours: @issue.estimated_hours,
           spent_hours: @issue.spent_hours,
-          parent: @issue.parent ? "##{@issue.parent.id} #{@issue.parent.subject}" : nil,
+          parent: visible_parent ? "##{visible_parent.id} #{visible_parent.subject}" : nil,
           # 재귀적으로 처리된 childrens 사용
           childrens: build_children_hierarchy(@issue.children, 0),
           # 마일스톤 관련 추가 정보
           worker: @issue.worker_id ? Principal.find(@issue.worker_id).name : nil,
           begin_time: @issue.respond_to?(:begin_time) ? @issue.begin_time : nil,
           end_time: @issue.respond_to?(:end_time) ? @issue.end_time : nil,
-          attachments: @issue.attachments.map do |attachment|
+          attachments: @issue.attachments.select { |attachment| attachment.visible? }.map do |attachment|
             {
               id: attachment.id,
               filename: attachment.filename,
               content_type: attachment.content_type,
               url: "/issue_tooltip/attachment_file/#{attachment.id}"
-              #url: "https://redmine-ssr.supercreative.kr/issue_tooltip/attachment_file/#{attachment.id}"
             }
           end
         }
@@ -135,7 +126,7 @@ class IssueTooltipController < ApplicationController
   def build_children_hierarchy(children, current_depth)
     result = []
     
-    children.select { |child| !child.is_discarded? }.each do |child|
+    children.select { |child| child.visible? && !child.is_discarded? }.each do |child|
       is_exception = tracker_flag_enabled?(child.tracker, :is_exception)
       is_sidejob = tracker_flag_enabled?(child.tracker, :is_sidejob)
 
